@@ -12,9 +12,16 @@ class FollowerController extends GetxController {
   final StorageService _storage = Get.find();
   final AuthController _auth = Get.find();
 
+  @override
+  void onInit() {
+    super.onInit();
+    fetchFollowerInsights();
+  }
+
   Future<void> fetchFollowerInsights() async {
     try {
       isLoading.value = true;
+      insights.clear();
 
       // Get insights from API
       final response = await _apiService.getFollowersList(

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:instagram_clone/app_constants.dart';
@@ -8,15 +7,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService extends GetxService {
   final _storage = const FlutterSecureStorage();
-  final _sharedPrefs = Get.find<SharedPreferences>();
+  late final SharedPreferences _sharedPrefs;
+
+  Future<StorageService> init() async {
+    _sharedPrefs = Get.find<SharedPreferences>();
+    return this;
+  }
 
   Future<void> saveFollowerInsights(List<FollowerInsight> insights) async {
-    final jsonList = insights.map((insight) => {
-      'gender': insight.gender,
-      'ageRange': insight.ageRange,
-      'count': insight.count,
-    }).toList();
-
+    final jsonList = insights.map((insight) => insight.toJson()).toList();
     await _sharedPrefs.setString(
       AppConstants.followersListKey,
       json.encode(jsonList),
@@ -26,13 +25,8 @@ class StorageService extends GetxService {
   Future<List<FollowerInsight>> getFollowerInsights() async {
     final jsonString = _sharedPrefs.getString(AppConstants.followersListKey);
     if (jsonString == null) return [];
-
     final List<dynamic> jsonList = json.decode(jsonString);
-    return jsonList.map((json) => FollowerInsight(
-      gender: json['gender'],
-      ageRange: json['ageRange'],
-      count: json['count'],
-    )).toList();
+    return jsonList.map((json) => FollowerInsight.fromJson(json)).toList();
   }
 
   Future<void> clearAll() async {

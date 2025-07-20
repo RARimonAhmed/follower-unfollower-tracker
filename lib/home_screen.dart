@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instagram_clone/auth_controller.dart';
 import 'package:instagram_clone/comment_screen.dart';
+import 'package:instagram_clone/follower_controller.dart';
 import 'package:instagram_clone/follower_screen.dart';
 import 'package:instagram_clone/profile_screen.dart';
+import 'package:instagram_clone/storage_service.dart';
 import 'package:instagram_clone/unfollower_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -38,7 +40,16 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => Get.to(() => const UnfollowerScreen()),
+              onPressed: () async {
+                // Initialize StorageService first
+                await Get.putAsync<StorageService>(() async {
+                  final storage = StorageService();
+                  return storage.init();
+                }, permanent: true);
+
+                Get.put(FollowerController(), permanent: true);
+                Get.to(() => const UnfollowerScreen());
+              },
               child: const Text('View Unfollowers'),
             ),
             const SizedBox(height: 20),
