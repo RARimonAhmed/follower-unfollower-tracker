@@ -8,6 +8,7 @@ import 'package:instagram_clone/deeplink_handler.dart';
 import 'package:instagram_clone/follower_controller.dart';
 import 'package:instagram_clone/home_screen.dart';
 import 'package:instagram_clone/login_screen.dart';
+import 'package:instagram_clone/storage_service.dart';
 import 'package:instagram_clone/theme_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +24,15 @@ void main() async {
 
   // Register SharedPreferences instance
   Get.put<SharedPreferences>(prefs);
+
+
+  // Initialize StorageService
+  await Get.putAsync<StorageService>(() async {
+    final storage = StorageService();
+    return storage.init();
+  }, permanent: true);
+
+
   Get.put(DeepLinkHandler(authController: authController), permanent: true);
 
   runApp(const MyApp());

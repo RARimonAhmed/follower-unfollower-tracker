@@ -25,7 +25,7 @@ class FollowerController extends GetxController {
 
       // Get insights from API
       final response = await _apiService.getFollowersList(
-        _auth.businessAccountId.value,
+        _auth.userId.value,
         _auth.accessToken.value,
       );
 

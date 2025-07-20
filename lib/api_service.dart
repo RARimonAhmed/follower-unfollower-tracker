@@ -97,15 +97,35 @@ class ApiService extends GetxService {
   }
 
   Future<Map<String, dynamic>> getFollowersList(String businessAccountId, String accessToken) async {
-    // Note: This requires the 'instagram_manage_insights' permission
-    final response = await http.get(
-      Uri.parse('${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count,audience_gender_age,audience_locale,audience_country&period=lifetime&access_token=$accessToken'),
-    );
+    try {
+      // Get basic follower count
+      final countResponse = await http.get(
+        Uri.parse(
+          '${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count&period=lifetime&access_token=$accessToken',
+        ),
+      );
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to fetch followers insights: ${response.body}');
+      // Get demographics
+      final demoResponse = await http.get(
+        Uri.parse(
+          '${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count,profile_views&period=lifetime&access_token=$accessToken',
+        ),
+      );
+
+      print("Url is ${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count,profile_views&period=lifetime&access_token=$accessToken");
+      print("Response body is ${demoResponse.body.toString()}");
+      print("Response status code is ${demoResponse.statusCode.toString()}");
+
+      if (countResponse.statusCode == 200 && demoResponse.statusCode == 200) {
+        return {
+          'count': json.decode(countResponse.body),
+          'demographics': json.decode(demoResponse.body),
+        };
+      } else {
+        throw Exception('Failed to get complete insights');
+      }
+    } catch (e) {
+      throw Exception('Insights request failed: $e');
     }
   }
 
