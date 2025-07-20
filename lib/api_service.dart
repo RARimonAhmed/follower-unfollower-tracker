@@ -65,15 +65,22 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<Map<String, dynamic>> getBusinessProfile(String businessAccountId, String accessToken) async {
+  // Add this method to your ApiService class
+  Future<Map<String, dynamic>> getUserProfile(String userId, String accessToken) async {
+    print("User id is $userId");
     final response = await http.get(
-      Uri.parse('${AppConstants.instagramGraphUrl}/$businessAccountId?fields=biography,id,ig_id,followers_count,follows_count,media_count,name,profile_picture_url,username,website&access_token=$accessToken'),
+      Uri.parse("${AppConstants.instagramGraphUrl}/$userId?fields=name,username,profile_picture_url,followers_count,follows_count,media_count,biography,website&access_token=$accessToken",
+      ),
     );
+
+    print("Url is ${AppConstants.instagramGraphUrl}/$userId?fields=name,username,profile_picture_url,followers_count,follows_count,media_count,biography,website&access_token=$accessToken");
+    print("Response body is ${response.body.toString()}");
+    print("Response status code is ${response.statusCode.toString()}");
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('Failed to fetch business profile: ${response.body}');
+      throw Exception('Failed to fetch user profile: ${response.body}');
     }
   }
 

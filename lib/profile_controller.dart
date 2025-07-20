@@ -12,8 +12,8 @@ class ProfileController extends GetxController {
   Future<void> fetchProfile() async {
     try {
       isLoading.value = true;
-      final profileData = await _apiService.getBusinessProfile(
-        _authController.businessAccountId.value,
+      final profileData = await _apiService.getUserProfile(
+        _authController.userId.value,
         _authController.accessToken.value,
       );
       profile.value = BusinessProfile.fromJson(profileData);

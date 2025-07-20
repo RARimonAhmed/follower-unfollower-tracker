@@ -18,7 +18,7 @@ class AppConstants {
   static const String instagramTokenUrl = 'https://api.instagram.com/oauth/access_token';
   static const String metaAuthUrl = 'https://www.facebook.com/v19.0/dialog/oauth';
   static const String metaTokenUrl = 'https://graph.facebook.com/v19.0/oauth/access_token';
-  static const String instagramGraphUrl = 'https://graph.instagram.com';
+  static const String instagramGraphUrl = 'https://graph.instagram.com/v19.0';
 
   // Storage Keys
   static const String accessTokenKey = 'instagram_access_token';
