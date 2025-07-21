@@ -26,6 +26,13 @@ class AppConstants {
   static const String pageIdKey = 'instagram_page_id';
   static const String businessAccountIdKey = 'instagram_business_account_id';
   static const String followersListKey = 'followers_list_cache';
+
+  // RapidAPI Configuration - UPDATED
+  static const String rapidApiKey = 'd240a4a945mshbde0c03a17f4307p1cb4d1jsnc1fabd588e88';
+  static const String rapidApiHost = 'instagram-scraper-stable-api.p.rapidapi.com';
+  static const String baseUrl = 'https://instagram-scraper-stable-api.p.rapidapi.com';
+  static const String followersEndpoint = '/get_ig_user_followers.php';
+  static var userName = "";
 }
 
 

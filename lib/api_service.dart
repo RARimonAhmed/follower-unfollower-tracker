@@ -96,36 +96,42 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<Map<String, dynamic>> getFollowersList(String businessAccountId, String accessToken) async {
+  Future<Map<String, dynamic>> getFollowersList(String usernameOrUrl) async {
     try {
-      // Get basic follower count
-      final countResponse = await http.get(
-        Uri.parse(
-          '${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count&period=lifetime&access_token=$accessToken',
-        ),
+      final headers = {
+        'X-RapidAPI-Key': AppConstants.rapidApiKey,
+        'X-RapidAPI-Host': AppConstants.rapidApiHost,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
+
+      final body = {
+        'username_or_url': usernameOrUrl,
+        'data': 'followers',
+        // Optional parameters from your screenshot
+        // 'amount': '50', // Default is 50
+        // 'start_from': '0', // Start from first follower
+      };
+
+      final response = await http.post(
+        Uri.parse('${AppConstants.baseUrl}${AppConstants.followersEndpoint}'),
+        headers: headers,
+        body: body,
       );
 
-      // Get demographics
-      final demoResponse = await http.get(
-        Uri.parse(
-          '${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count,profile_views&period=lifetime&access_token=$accessToken',
-        ),
-      );
+      print("API Request:");
+      print("URL: ${AppConstants.baseUrl}${AppConstants.followersEndpoint}");
+      print("Headers: $headers");
+      print("Body: $body");
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
 
-      print("Url is ${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count,profile_views&period=lifetime&access_token=$accessToken");
-      print("Response body is ${demoResponse.body.toString()}");
-      print("Response status code is ${demoResponse.statusCode.toString()}");
-
-      if (countResponse.statusCode == 200 && demoResponse.statusCode == 200) {
-        return {
-          'count': json.decode(countResponse.body),
-          'demographics': json.decode(demoResponse.body),
-        };
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
       } else {
-        throw Exception('Failed to get complete insights');
+        throw Exception('Failed to fetch followers. Status: ${response.statusCode}, Body: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Insights request failed: $e');
+      throw Exception('Failed to fetch followers: $e');
     }
   }
 
