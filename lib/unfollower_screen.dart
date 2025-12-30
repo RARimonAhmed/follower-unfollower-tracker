@@ -15,7 +15,7 @@ class UnfollowerScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: controller.fetchFollowerInsights,
+            onPressed: controller.fetchFollowers,
           ),
         ],
       ),

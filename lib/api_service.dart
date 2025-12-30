@@ -65,15 +65,22 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<Map<String, dynamic>> getBusinessProfile(String businessAccountId, String accessToken) async {
+  // Add this method to your ApiService class
+  Future<Map<String, dynamic>> getUserProfile(String userId, String accessToken) async {
+    print("User id is $userId");
     final response = await http.get(
-      Uri.parse('${AppConstants.instagramGraphUrl}/$businessAccountId?fields=biography,id,ig_id,followers_count,follows_count,media_count,name,profile_picture_url,username,website&access_token=$accessToken'),
+      Uri.parse("${AppConstants.instagramGraphUrl}/$userId?fields=name,username,profile_picture_url,followers_count,follows_count,media_count,biography,website&access_token=$accessToken",
+      ),
     );
+
+    print("Url is ${AppConstants.instagramGraphUrl}/$userId?fields=name,username,profile_picture_url,followers_count,follows_count,media_count,biography,website&access_token=$accessToken");
+    print("Response body is ${response.body.toString()}");
+    print("Response status code is ${response.statusCode.toString()}");
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('Failed to fetch business profile: ${response.body}');
+      throw Exception('Failed to fetch user profile: ${response.body}');
     }
   }
 
@@ -89,16 +96,42 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<Map<String, dynamic>> getFollowersList(String businessAccountId, String accessToken) async {
-    // Note: This requires the 'instagram_manage_insights' permission
-    final response = await http.get(
-      Uri.parse('${AppConstants.instagramGraphUrl}/$businessAccountId/insights?metric=follower_count,audience_gender_age,audience_locale,audience_country&period=lifetime&access_token=$accessToken'),
-    );
+  Future<Map<String, dynamic>> getFollowersList(String usernameOrUrl) async {
+    try {
+      final headers = {
+        'X-RapidAPI-Key': AppConstants.rapidApiKey,
+        'X-RapidAPI-Host': AppConstants.rapidApiHost,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      };
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to fetch followers insights: ${response.body}');
+      final body = {
+        'username_or_url': usernameOrUrl,
+        'data': 'followers',
+        // Optional parameters from your screenshot
+        // 'amount': '50', // Default is 50
+        // 'start_from': '0', // Start from first follower
+      };
+
+      final response = await http.post(
+        Uri.parse('${AppConstants.baseUrl}${AppConstants.followersEndpoint}'),
+        headers: headers,
+        body: body,
+      );
+
+      print("API Request:");
+      print("URL: ${AppConstants.baseUrl}${AppConstants.followersEndpoint}");
+      print("Headers: $headers");
+      print("Body: $body");
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to fetch followers. Status: ${response.statusCode}, Body: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch followers: $e');
     }
   }
 

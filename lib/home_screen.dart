@@ -40,16 +40,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
-                // Initialize StorageService first
-                await Get.putAsync<StorageService>(() async {
-                  final storage = StorageService();
-                  return storage.init();
-                }, permanent: true);
-
-                Get.put(FollowerController(), permanent: true);
-                Get.to(() => const UnfollowerScreen());
-              },
+              onPressed: () => Get.to(() => const UnfollowerScreen()),
               child: const Text('View Unfollowers'),
             ),
             const SizedBox(height: 20),

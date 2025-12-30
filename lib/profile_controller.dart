@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:instagram_clone/api_service.dart';
+import 'package:instagram_clone/app_constants.dart';
 import 'package:instagram_clone/auth_controller.dart';
 import 'package:instagram_clone/profile_model.dart';
 
@@ -12,11 +13,12 @@ class ProfileController extends GetxController {
   Future<void> fetchProfile() async {
     try {
       isLoading.value = true;
-      final profileData = await _apiService.getBusinessProfile(
-        _authController.businessAccountId.value,
+      final profileData = await _apiService.getUserProfile(
+        _authController.userId.value,
         _authController.accessToken.value,
       );
       profile.value = BusinessProfile.fromJson(profileData);
+      AppConstants.userName = profile.value!.username.toString();
     } catch (e) {
       Get.snackbar('Error', 'Failed to load profile: ${e.toString()}');
     } finally {
@@ -28,7 +30,7 @@ class ProfileController extends GetxController {
     try {
       return await _apiService.getFollowersList(
         _authController.businessAccountId.value,
-        _authController.accessToken.value,
+        // _authController.accessToken.value,
       );
     } catch (e) {
       Get.snackbar('Error', 'Failed to load insights: ${e.toString()}');

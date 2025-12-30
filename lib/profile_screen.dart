@@ -37,16 +37,28 @@ class ProfileScreen extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(profile.profilePictureUrl),
+                backgroundImage: NetworkImage(profile.profilePictureUrl.toString(),),
               ),
               const SizedBox(height: 16),
               Text(
-                profile.username,
+                profile.username.toString(),
                 style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              Text('Account Type: ${profile.name}'),
-              const SizedBox(height: 16),
+              Text(profile.name.toString()),
+              if (profile.biography != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(profile.biography!),
+                ),
+              if (profile.website != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    profile.website!,
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -59,9 +71,39 @@ class ProfileScreen extends StatelessWidget {
                       const Text('Posts'),
                     ],
                   ),
-                  // Add more stats here
+                  Column(
+                    children: [
+                      Text(
+                        profile.followersCount.toString(),
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const Text('Followers'),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        profile.followsCount.toString(),
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const Text('Following'),
+                    ],
+                  ),
                 ],
               ),
+              if (profile.isUserFollowBusiness != null || profile.isBusinessFollowUser != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (profile.isUserFollowBusiness ?? false)
+                        const Chip(label: Text('Follows you')),
+                      if (profile.isBusinessFollowUser ?? false)
+                        const Chip(label: Text('Following')),
+                    ],
+                  ),
+                ),
             ],
           ),
         );
